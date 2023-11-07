@@ -18,7 +18,7 @@ on:
  
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
  
     steps:
       - name: Checkout code
@@ -31,9 +31,8 @@ jobs:
  
       - name: Install Maven
         run: |
-          sudo apt update
-          sudo apt install maven -y
- 
+          mvn install
+
       - name: Run test suites
         run: |
           mvn test -Dcucumber.filter.tags="@focus"
