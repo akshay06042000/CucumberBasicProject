@@ -33,9 +33,9 @@ jobs:
         run: |
           mvn install
 
-      - name: Run test suites
-        run: |
-          mvn test -Dcucumber.filter.tags="@focus"
+      # - name: Run test suites
+      #   run: |
+      #     mvn test -Dcucumber.filter.tags="@focus"
  
       - name: Upload Test Reports
         uses: actions/upload-artifact@v2
