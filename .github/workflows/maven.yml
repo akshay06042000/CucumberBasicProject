@@ -29,13 +29,13 @@ jobs:
         with:
           java-version: '11'
  
-      - name: Install Maven
-        run: |
-          mvn install
-
-      # - name: Run test suites
+      # - name: Install Maven
       #   run: |
-      #     mvn test -Dcucumber.filter.tags="@focus"
+      #     mvn install
+
+      - name: Run test suites
+        run: |
+          mvn test -Dcucumber.filter.tags="@focus"
  
       - name: Upload Test Reports
         uses: actions/upload-artifact@v2
