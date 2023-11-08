@@ -29,9 +29,9 @@ jobs:
         with:
           java-version: '11'
  
-      # - name: Install Maven
-      #   run: |
-      #     mvn install
+      - name: Install Maven
+        run: |
+          mvn clean install
 
       - name: Run test suites
         run: |
