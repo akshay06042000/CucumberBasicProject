@@ -18,7 +18,7 @@ on:
  
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
  
     steps:
       - name: Checkout code
@@ -28,10 +28,16 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
- 
+
+      - name: Install Google Chrome 
+        run: |
+          chmod +x ./scripts/InstallChrome.sh
+                        ./scripts/InstallChrome.sh 
+                          
       - name: Install Maven
         run: |
-          mvn clean install
+          sudo apt update
+          sudo apt install maven -y
 
       - name: Run test suites
         run: |
