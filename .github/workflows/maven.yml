@@ -28,11 +28,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-
-      - name: Install Chrome
-        run: |
-          Invoke-WebRequest -Uri 'https://dl.google.com/chrome/install/latest/chrome_installer.exe' -OutFile 'chrome_installer.exe'
-          Start-Process -FilePath 'chrome_installer.exe' -ArgumentList '/silent' -Wait
                           
       - name: Install Maven
         run: |
