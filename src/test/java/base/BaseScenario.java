@@ -31,9 +31,11 @@
 
 package base;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.safari.SafariDriver;
@@ -54,113 +56,122 @@ public class BaseScenario {
   /**
    *  Get the driver with devices
    */
+
+
+
   public WebDriver getDriver() {
-    if (null != driver) {
-      return driver;
-    }
-
-      // Environment variables
-    String envName = (String)System.getProperty("envName","local");
-    String browserName = (String)System.getProperty("browserName","googlechrome");
-    String appName = (String)System.getProperty("appName","Zeno Yu");
-
-    if (envName.equalsIgnoreCase("local")) {
-      String driverDirectory = System.getProperty("user.dir")+"\\drivers\\";
-      String driverLocation = System.getProperty("driverLocation",driverDirectory);
-      String machineType = System.getProperty("machineType","");
-      if (browserName.equalsIgnoreCase("googlechrome")) { 
-
-        /* Chrome Local */
-        if (machineType.equalsIgnoreCase("mac")) {
-          System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "/drivers/chromedriver");
-        }
-        else {
-          System.setProperty("webdriver.chrome.driver", driverLocation + "chromedriver.exe");
-        }
-        driver = new ChromeDriver();
-
-      } else if (browserName.equalsIgnoreCase("ie")) {
-
-        /* IE Local */
-        System.setProperty("webdriver.ie.driver", driverLocation + "IEDriverServer.exe");
-        DesiredCapabilities ieCapabilities = DesiredCapabilities.internetExplorer();
-        ieCapabilities.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
-        ieCapabilities.setCapability("ignoreZoomSetting", true);
-        driver = new InternetExplorerDriver(ieCapabilities);
-
-      } else if (browserName.equalsIgnoreCase("safari")) {
-
-        /* Safari Driver */
-        driver = new SafariDriver();
-      } else if (browserName.equalsIgnoreCase("firefox")) {
-
-        /* Firefox */
-        driver = new FirefoxDriver();
-      }
-    } else {
-      // default chrome
-      DesiredCapabilities capabillities = DesiredCapabilities.chrome();
-      /* Remote Testing Bot */
-      /* All supporting browsers: https://api.testingbot.com/v1/browsers*/
-
-      if (browserName.equalsIgnoreCase("ie8")) { 
-        // iexplorer 8
-        capabillities = DesiredCapabilities.internetExplorer();
-        capabillities.setCapability("version", "8");
-        capabillities.setCapability("platform", Platform.WINDOWS);  
-        capabillities.setCapability("name", appName + " - Automated Testing (IE8)");
-      } else if (browserName.equalsIgnoreCase("ie9")) { 
-        // iexplorer 9
-        capabillities = DesiredCapabilities.internetExplorer();
-        capabillities.setCapability("version", "9");
-        capabillities.setCapability("platform", Platform.WINDOWS);  
-        capabillities.setCapability("name", appName + " - Automated Testing (IE9)");
-      } else if (browserName.equalsIgnoreCase("ie10")) { 
-        // iexplorer 10
-        capabillities = DesiredCapabilities.internetExplorer();
-        capabillities.setCapability("version", "10");
-        capabillities.setCapability("platform", Platform.WINDOWS);  
-        capabillities.setCapability("name", appName + " - Automated Testing (IE10)");
-      } else if (browserName.equalsIgnoreCase("firefox")) { 
-        // Windows FireFox
-        capabillities = DesiredCapabilities.firefox();
-        capabillities.setCapability("version", "31");  
-        capabillities.setCapability("platform", Platform.WINDOWS);  
-        capabillities.setCapability("name", appName + " - Automated Testing (Firefox)");
-      } else if (browserName.equalsIgnoreCase("safari")) { 
-        // safari
-        capabillities = DesiredCapabilities.safari();
-        capabillities.setCapability("version", "6");  
-        capabillities.setCapability("platform", Platform.MAC);  
-        capabillities.setCapability("name", appName + " - Automated Testing (Safari)");
-      } else if (browserName.equalsIgnoreCase("iphone")) { 
-        // iphone
-        capabillities = DesiredCapabilities.iphone();
-        capabillities.setCapability("platform", Platform.MAC);  
-        capabillities.setCapability("name", appName + " - Automated Testing (iPhone)");
-      } else if (browserName.equalsIgnoreCase("ipad")) { 
-        // ipad
-        capabillities = DesiredCapabilities.ipad();
-        capabillities.setCapability("platform", Platform.MAC);  
-        capabillities.setCapability("name", appName + " - Automated Testing (iPad)");
-      } else {
-        // Windows Google Chrome
-        capabillities = DesiredCapabilities.chrome();
-        capabillities.setCapability("platform", Platform.WINDOWS);  
-        capabillities.setCapability("name", appName + " - Automated Testing (Chrome)");  
-      }
-      try {
-        String remoteWebDriver = System.getProperty("remoteWebDriver");
-        driver = new RemoteWebDriver(new URL(remoteWebDriver), capabillities);
-        // http://www.seleniumhq.org/docs/04_webdriver_advanced.jsp#implicit-waits
-        // Wait for DOM to avoid `stale element reference: element is not attached to the page document`
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-      } catch (Exception e) {
-
-      }
-    }
+    ChromeOptions chromeOptions = new ChromeOptions();
+    WebDriverManager.chromedriver().setup();
+    chromeOptions.addArguments("--no-sandbox");
+    chromeOptions.addArguments("--disable-dev-shm-usage");
+    chromeOptions.addArguments("--headless");
+    driver = new ChromeDriver(chromeOptions);
     return driver;
   }
+
+//
+//      // Environment variables
+//    String envName = (String)System.getProperty("envName","local");
+//    String browserName = (String)System.getProperty("browserName","googlechrome");
+//    String appName = (String)System.getProperty("appName","Zeno Yu");
+//
+//    if (envName.equalsIgnoreCase("local")) {
+//      String driverDirectory = System.getProperty("user.dir")+"\\drivers\\";
+//      String driverLocation = System.getProperty("driverLocation",driverDirectory);
+//      String machineType = System.getProperty("machineType","");
+//      if (browserName.equalsIgnoreCase("googlechrome")) {
+//
+//        /* Chrome Local */
+//        if (machineType.equalsIgnoreCase("mac")) {
+//          System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "/drivers/chromedriver");
+//        }
+//        else {
+//          System.setProperty("webdriver.chrome.driver", driverLocation + "chromedriver.exe");
+//        }
+//        driver = new ChromeDriver();
+//
+//      } else if (browserName.equalsIgnoreCase("ie")) {
+//
+//        /* IE Local */
+//        System.setProperty("webdriver.ie.driver", driverLocation + "IEDriverServer.exe");
+//        DesiredCapabilities ieCapabilities = DesiredCapabilities.internetExplorer();
+//        ieCapabilities.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
+//        ieCapabilities.setCapability("ignoreZoomSetting", true);
+//        driver = new InternetExplorerDriver(ieCapabilities);
+//
+//      } else if (browserName.equalsIgnoreCase("safari")) {
+//
+//        /* Safari Driver */
+//        driver = new SafariDriver();
+//      } else if (browserName.equalsIgnoreCase("firefox")) {
+//
+//        /* Firefox */
+//        driver = new FirefoxDriver();
+//      }
+//    } else {
+//      // default chrome
+//      DesiredCapabilities capabillities = DesiredCapabilities.chrome();
+//      /* Remote Testing Bot */
+//      /* All supporting browsers: https://api.testingbot.com/v1/browsers*/
+//
+//      if (browserName.equalsIgnoreCase("ie8")) {
+//        // iexplorer 8
+//        capabillities = DesiredCapabilities.internetExplorer();
+//        capabillities.setCapability("version", "8");
+//        capabillities.setCapability("platform", Platform.WINDOWS);
+//        capabillities.setCapability("name", appName + " - Automated Testing (IE8)");
+//      } else if (browserName.equalsIgnoreCase("ie9")) {
+//        // iexplorer 9
+//        capabillities = DesiredCapabilities.internetExplorer();
+//        capabillities.setCapability("version", "9");
+//        capabillities.setCapability("platform", Platform.WINDOWS);
+//        capabillities.setCapability("name", appName + " - Automated Testing (IE9)");
+//      } else if (browserName.equalsIgnoreCase("ie10")) {
+//        // iexplorer 10
+//        capabillities = DesiredCapabilities.internetExplorer();
+//        capabillities.setCapability("version", "10");
+//        capabillities.setCapability("platform", Platform.WINDOWS);
+//        capabillities.setCapability("name", appName + " - Automated Testing (IE10)");
+//      } else if (browserName.equalsIgnoreCase("firefox")) {
+//        // Windows FireFox
+//        capabillities = DesiredCapabilities.firefox();
+//        capabillities.setCapability("version", "31");
+//        capabillities.setCapability("platform", Platform.WINDOWS);
+//        capabillities.setCapability("name", appName + " - Automated Testing (Firefox)");
+//      } else if (browserName.equalsIgnoreCase("safari")) {
+//        // safari
+//        capabillities = DesiredCapabilities.safari();
+//        capabillities.setCapability("version", "6");
+//        capabillities.setCapability("platform", Platform.MAC);
+//        capabillities.setCapability("name", appName + " - Automated Testing (Safari)");
+//      } else if (browserName.equalsIgnoreCase("iphone")) {
+//        // iphone
+//        capabillities = DesiredCapabilities.iphone();
+//        capabillities.setCapability("platform", Platform.MAC);
+//        capabillities.setCapability("name", appName + " - Automated Testing (iPhone)");
+//      } else if (browserName.equalsIgnoreCase("ipad")) {
+//        // ipad
+//        capabillities = DesiredCapabilities.ipad();
+//        capabillities.setCapability("platform", Platform.MAC);
+//        capabillities.setCapability("name", appName + " - Automated Testing (iPad)");
+//      } else {
+//        // Windows Google Chrome
+//        capabillities = DesiredCapabilities.chrome();
+//        capabillities.setCapability("platform", Platform.WINDOWS);
+//        capabillities.setCapability("name", appName + " - Automated Testing (Chrome)");
+//      }
+//      try {
+//        String remoteWebDriver = System.getProperty("remoteWebDriver");
+//        driver = new RemoteWebDriver(new URL(remoteWebDriver), capabillities);
+//        // http://www.seleniumhq.org/docs/04_webdriver_advanced.jsp#implicit-waits
+//        // Wait for DOM to avoid `stale element reference: element is not attached to the page document`
+//        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+//      } catch (Exception e) {
+//
+//      }
+//    }
+//    return driver;
+//  }
 
   /**
    * Get Site Url from pom.xml properties or command line -DsiteUrl
