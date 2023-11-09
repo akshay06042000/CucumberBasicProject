@@ -41,7 +41,8 @@ jobs:
         mvn test -Dcucumber.filter.tags="@focus"
  
     - name: Upload Test Reports
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3.1.3
       with:
         name: test-reports
         path: target/surefire-reports
+        retention-days: 7
